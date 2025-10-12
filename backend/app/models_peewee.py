@@ -44,10 +44,14 @@ class Music(BaseModel):
     class Meta:
         table_name = "music"
 
-class User_music_ratings(BaseModel):
+class UserMusicRating(BaseModel):
     id: int
-    user_id: int
-    music_id: int
+    user = ForeignKeyField(User, backref="ratings")
+    music = ForeignKeyField(Music, backref="ratings")
+    rating = IntegerField()
     rating: int
     created_at: datetime
     genre: str
+
+    class Meta:
+        table_name = "user_music_ratings"

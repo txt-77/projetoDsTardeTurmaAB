@@ -38,7 +38,7 @@ def recommend_popular(
         .join(UserMusicRating, JOIN.LEFT_OUTER, on=((UserMusicRating.music == Music.id) & (UserMusicRating.rating == 1)))
         .where(Music.id.not_in(subq))
         .group_by(Music.id)
-        .order_by(fn.COUNT(UserMusicRating.id).desc(), Music.posted_at.desc())
+        .order_by(fn.COUNT(UserMusicRating.id).desc(), Music.posted.desc())
         .limit(limit))
   out = []
   for row in q:
