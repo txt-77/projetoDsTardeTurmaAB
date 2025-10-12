@@ -47,7 +47,7 @@ def recommend_popular(
           "title": getattr(row, "title", None),
           "artist_id": getattr(row, "artist_id", None),
           "likes": int(getattr(row, "likes", 0) or 0),
-          "posted_at": getattr(row, "posted_at", None)
+          "posted_at": getattr(row, "posted", None)
       })
   return out
 
