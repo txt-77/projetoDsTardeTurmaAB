@@ -82,11 +82,6 @@ export default function TinderSwipeSquare() {
     nextCard();
   };
 
-  const nextCard = () => {
-    position.setValue({ x: 0, y: 0 });
-    setCurrentIndex((prev) => prev + 1);
-  };
-
  
   const rotate = position.x.interpolate({
     inputRange: [-width / 2, 0, width / 2],

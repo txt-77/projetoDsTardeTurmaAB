@@ -3,12 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   SafeAreaView,
   Animated,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const App = () => {

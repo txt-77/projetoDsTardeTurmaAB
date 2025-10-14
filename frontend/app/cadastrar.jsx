@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Image, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 
 const Cadastro = () => {
-  const { width, height } = useWindowDimensions();
+  const { width} = useWindowDimensions();
 
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
   const rf = (size) => Math.round(clamp(size * (width / 390), 12, 28)); // escala responsiva
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#8000D5',
     alignItems: 'center',
-    marginBottom: rf(20),
+    marginBottom: 20,
   },
   textoBotao: {
     color: '#FFF',
