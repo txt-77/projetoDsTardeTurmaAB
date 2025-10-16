@@ -15,3 +15,9 @@ def test_create_music():
     data = response.json()
     assert data["title"] == "Imagine"
     assert "id" in data
+
+def test_get_specific_music():
+    response = client.get("/1")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == 1
