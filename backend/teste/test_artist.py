@@ -1,6 +1,5 @@
-import unittest
 from fastapi.testclient import TestClient
-from app.main import app
+from main import app
 
 client = TestClient(app)
 
@@ -17,15 +16,28 @@ def test_create_artist():
     assert "id" in data
     assert data["name"] == "Anitta"
 
-def test_get_single_artist(self):
-    response = client.get("/artist/1")
-    self.assertIn(response.status_code, [200, 404])  
+def test_get_artist_by_id():
+    create_response = client.post("/api/artists/", json={"name": "Alok"})
+    artist_id = create_response.json()["id"]
 
-def test_update_artist(self):
-    data = {"name": "Updated Artist"}
-    response = client.put("/artist/1", json=data)
-    self.assertIn(response.status_code, [200, 404])
+    response = client.get(f"/api/artists/{artist_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == artist_id
+    assert data["name"] == "Alok"
 
-def test_delete_artist(self):
-    response = client.delete("/artist/1")
-    self.assertIn(response.status_code, [200, 404])
+def test_update_artist():
+    create_response = client.post("/api/artists/", json={"name": "Luan"})
+    artist_id = create_response.json()["id"]
+
+    update_response = client.put(f"/api/artists/{artist_id}", json={"name": "Luan Santana"})
+    assert update_response.status_code == 200
+    assert update_response.json()["message"] == "Artist updated"
+
+def test_delete_artist():
+    create_response = client.post("/api/artists/", json={"name": "Iza"})
+    artist_id = create_response.json()["id"]
+
+    delete_response = client.delete(f"/api/artists/{artist_id}")
+    assert delete_response.status_code == 200
+    assert delete_response.json()["message"] == "Artist deleted"
