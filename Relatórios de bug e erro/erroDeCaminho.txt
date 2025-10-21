@@ -1,0 +1,20 @@
+
+*Caminho inesperado*
+
+Nome: Natan Santos
+Data: 21/10/25
+Área do bug:Back-end
+
+AssertionError, o código estava esperando pela rota 404 ao invés de 200. Dessa forma, gerando um erro de AssertionError
+
+teste/test_artist.py:26: AssertionError
+_____________________ TestArtistRoutes.test_update_artist ______________________
+
+self = <test_artist.TestArtistRoutes testMethod=test_update_artist>
+
+    def test_update_artist(self):
+        """Testa a rota PUT /api/artists/{id}"""
+        data = {"name": "Updated Artist"}
+        response = client.put("/api/artists/1", json=data)
+>       self.assertEqual(response.status_code, 200)
+E       AssertionError: 404 != 200
