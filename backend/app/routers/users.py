@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.get("/")
 def get_users():
-    return fake_db.users
+    return fake_db['users']
 
 @router.get("/{user_id}")
 def get_user(user_id: int):
