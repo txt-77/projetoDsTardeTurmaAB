@@ -53,6 +53,15 @@ const App = () => {
     });
   };
 
+  const headerFontSize = Math.min(Math.max(width * 0.06, 18), 28);
+  const mainHeartSize = Math.min(Math.max(width * 0.25, 80), 130);
+  const particleSize = Math.min(Math.max(width * 0.045, 15), 22);
+  const contentTitleSize = Math.min(Math.max(width * 0.055, 17), 24);
+  const contentDescSize = Math.min(Math.max(width * 0.038, 13), 18);
+  const navFontSize = Math.min(Math.max(width * 0.04, 14), 20);
+  const iconButtonPadding = Math.min(Math.max(width * 0.04, 12), 20);
+  const iconButtonBorderRadius = Math.min(Math.max(width * 0.3, 50), 90);
+
   return (
     <LinearGradient
       colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']}
@@ -62,27 +71,27 @@ const App = () => {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[styles.header, { paddingVertical: height * 0.035 }]}>
-          <Text style={[styles.headerText, { fontSize: Math.min(width * 0.07, 24) }]}>Suas Curtidas</Text>
+          <Text style={[styles.headerText, { fontSize: headerFontSize }]}>Suas Curtidas</Text>
         </View>
 
-        <View style={[styles.iconContainer, { marginTop: height * 0.025 }]}>
+        <View style={[styles.iconContainer, { marginTop: height * 0.03 }]}>
           <TouchableWithoutFeedback onPress={handlePress}>
             <Animated.View
               style={[
                 styles.iconButton,
                 {
                   transform: [{ scale: scaleAnim }],
-                  padding: width * 0.04,
-                  borderRadius: width * 0.3,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 5,
-                  elevation: 8,
+                  padding: iconButtonPadding,
+                  borderRadius: iconButtonBorderRadius,
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.35,
+                  shadowRadius: 7,
+                  elevation: 10,
                 },
               ]}
             >
-              <Icon name="heart" size={width * 0.25} color="#fff" style={styles.backHeart} />
-              <Icon name="heart" size={width * 0.22} color="#ffd900" />
+              <Icon name="heart" size={mainHeartSize} color="#fff" style={styles.backHeart} />
+              <Icon name="heart" size={mainHeartSize * 0.9} color="#ffd900" />
             </Animated.View>
           </TouchableWithoutFeedback>
 
@@ -95,7 +104,7 @@ const App = () => {
 
               const translateX = anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, (i % 2 === 0 ? -1 : 1) * (20 + i * 10)],
+                outputRange: [0, (i % 2 === 0 ? -1 : 1) * (25 + i * 12)],
               });
 
               const opacity = anim.interpolate({
@@ -115,23 +124,23 @@ const App = () => {
                     opacity,
                   }}
                 >
-                  <Icon name="heart" size={width * 0.045} color={colors[i % colors.length]} />
+                  <Icon name="heart" size={particleSize} color={colors[i % colors.length]} />
                 </Animated.View>
               );
             })}
         </View>
 
-        <View style={styles.content}>
-          <Text style={[styles.contentText1, { fontSize: Math.min(width * 0.06, 22) }]}>Ainda sem curtidas</Text>
-          <Text style={[styles.contentText2, { fontSize: Math.min(width * 0.04, 16), marginTop: 10 }]}>
+        <View style={[styles.content, { paddingHorizontal: width * 0.1 }]}>
+          <Text style={[styles.contentText1, { fontSize: contentTitleSize }]}>Ainda sem curtidas</Text>
+          <Text style={[styles.contentText2, { fontSize: contentDescSize, marginTop: 12 }]}>
             Comece a descobrir músicas para ver suas curtidas aqui!
           </Text>
         </View>
 
-        <View style={[styles.nav, { paddingVertical: height * 0.02 }]}>
+        <View style={[styles.nav, { paddingVertical: height * 0.025 }]}>
           {['Player', 'Curtidas', 'Perfil'].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.navItem} activeOpacity={0.7}>
-              <Text style={[styles.navText1, { fontSize: Math.min(width * 0.045, 18) }]}>{item}</Text>
+            <TouchableOpacity key={index} style={[styles.navItem, { paddingHorizontal: width * 0.06 }]} activeOpacity={0.7}>
+              <Text style={[styles.navText1, { fontSize: navFontSize }]}>{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -172,7 +181,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: '10%',
   },
   contentText1: {
     color: '#ffffff',
@@ -188,7 +196,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   navItem: {
-    paddingHorizontal: 12,
   },
   navText1: {
     color: '#ff3cf5',
