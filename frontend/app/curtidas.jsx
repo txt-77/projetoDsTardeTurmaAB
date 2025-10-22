@@ -15,8 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [showParticles, setShowParticles] = useState(false);
-  const dimensions = useWindowDimensions();
-  const { width, height } = dimensions;
+  const { width, height } = useWindowDimensions();
 
   const particles = [
     useRef(new Animated.Value(0)).current,
@@ -62,24 +61,28 @@ const App = () => {
       end={{ x: 0.5, y: 1 }}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={[styles.header, { paddingVertical: height * 0.03 }]}>
-          <Text style={[styles.headerText, { fontSize: width * 0.05 }]}>Suas Curtidas</Text>
+        <View style={[styles.header, { paddingVertical: height * 0.035 }]}>
+          <Text style={[styles.headerText, { fontSize: Math.min(width * 0.07, 24) }]}>Suas Curtidas</Text>
         </View>
 
-        <View style={[styles.iconContainer, { marginTop: height * 0.02 }]}>
+        <View style={[styles.iconContainer, { marginTop: height * 0.025 }]}>
           <TouchableWithoutFeedback onPress={handlePress}>
             <Animated.View
               style={[
                 styles.iconButton,
                 {
                   transform: [{ scale: scaleAnim }],
-                  padding: width * 0.035,
-                  borderRadius: width * 0.2,
+                  padding: width * 0.04,
+                  borderRadius: width * 0.3,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 5,
+                  elevation: 8,
                 },
               ]}
             >
               <Icon name="heart" size={width * 0.25} color="#fff" style={styles.backHeart} />
-              <Icon name="heart" size={width * 0.23} color="#ffd900" />
+              <Icon name="heart" size={width * 0.22} color="#ffd900" />
             </Animated.View>
           </TouchableWithoutFeedback>
 
@@ -87,7 +90,12 @@ const App = () => {
             particles.map((anim, i) => {
               const translateY = anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, -80 - i * 10],
+                outputRange: [0, -90 - i * 15],
+              });
+
+              const translateX = anim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, (i % 2 === 0 ? -1 : 1) * (20 + i * 10)],
               });
 
               const opacity = anim.interpolate({
@@ -103,7 +111,7 @@ const App = () => {
                   style={{
                     position: 'absolute',
                     top: height * 0.4,
-                    transform: [{ translateY }],
+                    transform: [{ translateY }, { translateX }],
                     opacity,
                   }}
                 >
@@ -114,16 +122,16 @@ const App = () => {
         </View>
 
         <View style={styles.content}>
-          <Text style={[styles.contentText1, { fontSize: width * 0.055 }]}>Ainda sem curtidas</Text>
-          <Text style={[styles.contentText2, { fontSize: width * 0.037, marginTop: 8 }]}>
+          <Text style={[styles.contentText1, { fontSize: Math.min(width * 0.06, 22) }]}>Ainda sem curtidas</Text>
+          <Text style={[styles.contentText2, { fontSize: Math.min(width * 0.04, 16), marginTop: 10 }]}>
             Comece a descobrir músicas para ver suas curtidas aqui!
           </Text>
         </View>
 
-        <View style={[styles.nav, { paddingVertical: height * 0.015 }]}>
+        <View style={[styles.nav, { paddingVertical: height * 0.02 }]}>
           {['Player', 'Curtidas', 'Perfil'].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.navItem}>
-              <Text style={[styles.navText1, { fontSize: width * 0.04 }]}>{item}</Text>
+            <TouchableOpacity key={index} style={styles.navItem} activeOpacity={0.7}>
+              <Text style={[styles.navText1, { fontSize: Math.min(width * 0.045, 18) }]}>{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -152,7 +160,6 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     backgroundColor: '#9300a0',
-    elevation: 6,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -181,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   navItem: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
   },
   navText1: {
     color: '#ff3cf5',
