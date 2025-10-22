@@ -7,16 +7,16 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Animated,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const { width, height } = Dimensions.get('window');
-
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [showParticles, setShowParticles] = useState(false);
+  const dimensions = useWindowDimensions();
+  const { width, height } = dimensions;
 
   const particles = [
     useRef(new Animated.Value(0)).current,
@@ -57,20 +57,29 @@ const App = () => {
   return (
     <LinearGradient
       colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']}
-      style={styles.container}
+      style={[styles.container]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Suas Curtidas</Text>
+        <View style={[styles.header, { paddingVertical: height * 0.03 }]}>
+          <Text style={[styles.headerText, { fontSize: width * 0.05 }]}>Suas Curtidas</Text>
         </View>
 
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconContainer, { marginTop: height * 0.02 }]}>
           <TouchableWithoutFeedback onPress={handlePress}>
-            <Animated.View style={[styles.iconButton, { transform: [{ scale: scaleAnim }] }]}>
-              <Icon name="heart" size={width * 0.24} color="#fff" style={{ position: 'absolute', top: 8, left: 7 }} />
-              <Icon name="heart" size={width * 0.22} color="#ffd900" />
+            <Animated.View
+              style={[
+                styles.iconButton,
+                {
+                  transform: [{ scale: scaleAnim }],
+                  padding: width * 0.035,
+                  borderRadius: width * 0.2,
+                },
+              ]}
+            >
+              <Icon name="heart" size={width * 0.25} color="#fff" style={styles.backHeart} />
+              <Icon name="heart" size={width * 0.23} color="#ffd900" />
             </Animated.View>
           </TouchableWithoutFeedback>
 
@@ -93,37 +102,30 @@ const App = () => {
                   key={i}
                   style={{
                     position: 'absolute',
-                    top: '45%',
+                    top: height * 0.4,
                     transform: [{ translateY }],
                     opacity,
                   }}
                 >
-                  <Icon name="heart" size={16} color={colors[i % colors.length]} />
+                  <Icon name="heart" size={width * 0.045} color={colors[i % colors.length]} />
                 </Animated.View>
               );
             })}
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.contentText1}>Ainda sem curtidas</Text>
-        </View>
-
-        <View style={styles.content}>
-          <Text style={styles.contentText2}>
+          <Text style={[styles.contentText1, { fontSize: width * 0.055 }]}>Ainda sem curtidas</Text>
+          <Text style={[styles.contentText2, { fontSize: width * 0.037, marginTop: 8 }]}>
             Comece a descobrir músicas para ver suas curtidas aqui!
           </Text>
         </View>
 
-        <View style={styles.nav}>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Player</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Curtidas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Perfil</Text>
-          </TouchableOpacity>
+        <View style={[styles.nav, { paddingVertical: height * 0.015 }]}>
+          {['Player', 'Curtidas', 'Perfil'].map((item, index) => (
+            <TouchableOpacity key={index} style={styles.navItem}>
+              <Text style={[styles.navText1, { fontSize: width * 0.04 }]}>{item}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -136,63 +138,53 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#962fbf',
-    paddingVertical: height * 0.02,
     alignItems: 'center',
   },
   headerText: {
     color: '#fff',
-    fontSize: width * 0.05,
     fontWeight: 'bold',
   },
   iconContainer: {
-    flex: 1,
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: height * 0.02,
+    position: 'relative',
   },
   iconButton: {
     backgroundColor: '#9300a0',
-    borderRadius: 100,
-    padding: width * 0.03,
-    elevation: 5,
+    elevation: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  nav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#000000',
-    paddingVertical: height * 0.015,
-    marginBottom: 2,
-  },
-  navItem: {
-    paddingHorizontal: width * 0.03,
-  },
-  navText1: {
-    fontSize: width * 0.04,
-    color: '#ff3cf5',
+  backHeart: {
+    position: 'absolute',
+    top: 5,
+    left: 5,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: width * 0.1,
+    justifyContent: 'center',
+    paddingHorizontal: '10%',
   },
   contentText1: {
-    fontSize: width * 0.055,
     color: '#ffffff',
     textAlign: 'center',
   },
   contentText2: {
-    fontSize: width * 0.035,
     color: '#ffffff',
     textAlign: 'center',
   },
-  footer: {
-    backgroundColor: '#4A90E2',
-    padding: 15,
-    alignItems: 'center',
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#000',
   },
-  footerText: {
-    color: '#f80091',
+  navItem: {
+    paddingHorizontal: 10,
+  },
+  navText1: {
+    color: '#ff3cf5',
   },
 });
 
