@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   Animated,
   useWindowDimensions,
+  AccessibilityInfo,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +18,15 @@ const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [showParticles, setShowParticles] = useState(false);
   const { width, height } = useWindowDimensions();
+  const [reduceMotionEnabled, setReduceMotionEnabled] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      AccessibilityInfo.isReduceMotionEnabled().then((result) => {
+        setReduceMotionEnabled(result);
+      });
+    }
+  }, []);
 
   const particles = [
     useRef(new Animated.Value(0)).current,
@@ -24,6 +35,8 @@ const App = () => {
   ];
 
   const handlePress = () => {
+    if (reduceMotionEnabled) return;
+
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.3,
@@ -53,6 +66,8 @@ const App = () => {
     });
   };
 
+  const isPortrait = height >= width;
+
   const headerFontSize = Math.min(Math.max(width * 0.06, 18), 28);
   const mainHeartSize = Math.min(Math.max(width * 0.25, 80), 130);
   const particleSize = Math.min(Math.max(width * 0.045, 15), 22);
@@ -71,11 +86,29 @@ const App = () => {
     >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[styles.header, { paddingVertical: height * 0.035 }]}>
-          <Text style={[styles.headerText, { fontSize: headerFontSize }]}>Suas Curtidas</Text>
+          <Text
+            accessible
+            accessibilityRole="header"
+            accessibilityLabel="Título Suas Curtidas"
+            style={[styles.headerText, { fontSize: headerFontSize }]}
+          >
+            Suas Curtidas
+          </Text>
         </View>
 
-        <View style={[styles.iconContainer, { marginTop: height * 0.03 }]}>
-          <TouchableWithoutFeedback onPress={handlePress}>
+        <View
+          style={[
+            styles.iconContainer,
+            { marginTop: height * 0.03, flexDirection: isPortrait ? 'column' : 'row' },
+          ]}
+        >
+          <TouchableWithoutFeedback
+            onPress={handlePress}
+            accessibilityRole="button"
+            accessibilityLabel="Botão de Curtir"
+            accessibilityHint="Ativa animação de coração"
+            disabled={reduceMotionEnabled}
+          >
             <Animated.View
               style={[
                 styles.iconButton,
@@ -95,7 +128,7 @@ const App = () => {
             </Animated.View>
           </TouchableWithoutFeedback>
 
-          {showParticles &&
+          {!reduceMotionEnabled && showParticles &&
             particles.map((anim, i) => {
               const translateY = anim.interpolate({
                 inputRange: [0, 1],
@@ -131,15 +164,33 @@ const App = () => {
         </View>
 
         <View style={[styles.content, { paddingHorizontal: width * 0.1 }]}>
-          <Text style={[styles.contentText1, { fontSize: contentTitleSize }]}>Ainda sem curtidas</Text>
-          <Text style={[styles.contentText2, { fontSize: contentDescSize, marginTop: 12 }]}>
+          <Text
+            accessible
+            accessibilityRole="text"
+            accessibilityLabel="Mensagem principal ainda sem curtidas"
+            style={[styles.contentText1, { fontSize: contentTitleSize }]}
+          >
+            Ainda sem curtidas
+          </Text>
+          <Text
+            accessible
+            accessibilityRole="text"
+            accessibilityLabel="Descrição para começar a descobrir músicas"
+            style={[styles.contentText2, { fontSize: contentDescSize, marginTop: 12 }]}
+          >
             Comece a descobrir músicas para ver suas curtidas aqui!
           </Text>
         </View>
 
         <View style={[styles.nav, { paddingVertical: height * 0.025 }]}>
           {['Player', 'Curtidas', 'Perfil'].map((item, index) => (
-            <TouchableOpacity key={index} style={[styles.navItem, { paddingHorizontal: width * 0.06 }]} activeOpacity={0.7}>
+            <TouchableOpacity
+              key={index}
+              style={[styles.navItem, { paddingHorizontal: width * 0.06 }]}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Navegar para ${item}`}
+            >
               <Text style={[styles.navText1, { fontSize: navFontSize }]}>{item}</Text>
             </TouchableOpacity>
           ))}
@@ -195,8 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#000',
   },
-  navItem: {
-  },
+  navItem: {},
   navText1: {
     color: '#ff3cf5',
   },
