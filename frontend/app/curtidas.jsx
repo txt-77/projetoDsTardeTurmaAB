@@ -7,9 +7,12 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Animated,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width, height } = Dimensions.get('window');
 
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -52,31 +55,24 @@ const App = () => {
   };
 
   return (
-   
     <LinearGradient
-    colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']} 
-    style={styles.container}
-    start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
-    end={{ x: 0.5, y: 1 }}     
-  >
-  
-
+      colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']}
+      style={styles.container}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Suas Curtidas</Text>
         </View>
 
         <View style={styles.iconContainer}>
-  <TouchableWithoutFeedback onPress={handlePress}>
-    <Animated.View style={[styles.iconButton, { transform: [{ scale: scaleAnim }] }]}>
-      {/* Coração branco maior atrás */}
-      <Icon name="heart" size={96} color="#fff" style={{ position: 'absolute', top: 8, left: 7 }} />
-      {/* Coração amarelo na frente */}
-      <Icon name="heart" size={90} color="#ffd900" />
-    </Animated.View>
-  </TouchableWithoutFeedback>
-
-
+          <TouchableWithoutFeedback onPress={handlePress}>
+            <Animated.View style={[styles.iconButton, { transform: [{ scale: scaleAnim }] }]}>
+              <Icon name="heart" size={width * 0.24} color="#fff" style={{ position: 'absolute', top: 8, left: 7 }} />
+              <Icon name="heart" size={width * 0.22} color="#ffd900" />
+            </Animated.View>
+          </TouchableWithoutFeedback>
 
           {showParticles &&
             particles.map((anim, i) => {
@@ -102,7 +98,7 @@ const App = () => {
                     opacity,
                   }}
                 >
-                  <Icon name="heart" size={20} color={colors[i % colors.length]} />
+                  <Icon name="heart" size={16} color={colors[i % colors.length]} />
                 </Animated.View>
               );
             })}
@@ -113,7 +109,9 @@ const App = () => {
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.contentText2}>Comece a descobrir músicas para ver suas curtidas aqui!</Text>
+          <Text style={styles.contentText2}>
+            Comece a descobrir músicas para ver suas curtidas aqui!
+          </Text>
         </View>
 
         <View style={styles.nav}>
@@ -135,60 +133,58 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
   header: {
-    backgroundColor:'#962fbf',
-    padding: 20,
+    backgroundColor: '#962fbf',
+    paddingVertical: height * 0.02,
     alignItems: 'center',
   },
   headerText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
   },
   iconContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: height * 0.02,
   },
   iconButton: {
     backgroundColor: '#9300a0',
-    borderRadius: 50,
-    padding: 10,
+    borderRadius: 100,
+    padding: width * 0.03,
     elevation: 5,
   },
   nav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: '#000000',
-    paddingVertical: 10,
+    paddingVertical: height * 0.015,
     marginBottom: 2,
   },
   navItem: {
-    padding: 10,
+    paddingHorizontal: width * 0.03,
   },
   navText1: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     color: '#ff3cf5',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: width * 0.1,
   },
   contentText1: {
-    fontSize: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: width * 0.055,
     color: '#ffffff',
+    textAlign: 'center',
   },
   contentText2: {
-    fontSize: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: width * 0.035,
     color: '#ffffff',
+    textAlign: 'center',
   },
   footer: {
     backgroundColor: '#4A90E2',
