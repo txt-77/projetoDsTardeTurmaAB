@@ -1,301 +1,170 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useRef } from "react";
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
   Animated,
-  PanResponder,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { FlatList } from "react-native-gesture-handler";
 
-const { width, height } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
-const profiles = [
-  { id: 1, name: 'Perfil 1' },
-  { id: 2, name: 'Perfil 2' },
-  { id: 3, name: 'Perfil 3' },
-  { id: 4, name: 'Perfil 4' },
-  { id: 5, name: 'Perfil 5' },
-  { id: 6, name: 'Perfil 6' },
-  { id: 7, name: 'Perfil 7' },
-  { id: 8, name: 'Perfil 8' },
-  { id: 9, name: 'Perfil 9' },
-  { id: 10, name: 'Perfil 10' },
+const DATA = [
+  {
+    id: "1",
+    music: "Nome da Música",
+    artist: "Nome do Artista",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image:
+      "https://i.imgur.com/Nc3uQ2W.png", 
+    artistImage:
+      "https://i.pravatar.cc/100", 
+  },
+  {
+    id: "2",
+    music: "Outra Música",
+    artist: "Outro Artista",
+    description:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    image:
+      "https://i.imgur.com/Nc3uQ2W.png",
+    artistImage: "https://i.pravatar.cc/101",
+  },
 ];
 
-export default function TinderSwipeSquare() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedProfiles, setLikedProfiles] = useState([]);
-  const [dislikedProfiles, setDislikedProfiles] = useState([]);
-  const position = useRef(new Animated.ValueXY()).current;
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-
-      onPanResponderMove: (evt, gestureState) => {
-        position.setValue({ x: gestureState.dx, y: gestureState.dy });
-      },
-
-      onPanResponderRelease: (evt, gesture) => {
-        if (gesture.dx > 120) {
-          Animated.timing(position, {
-            toValue: { x: width * 1.5, y: gesture.dy },
-            duration: 250,
-            useNativeDriver: false,
-          }).start(() => {
-            handleSwipe('right');
-          });
-        } else if (gesture.dx < -120) {
-          Animated.timing(position, {
-            toValue: { x: -width * 1.5, y: gesture.dy },
-            duration: 250,
-            useNativeDriver: false,
-          }).start(() => {
-            handleSwipe('left');
-          });
-        } else {
-          Animated.spring(position, {
-            toValue: { x: 0, y: 0 },
-            useNativeDriver: false,
-          }).start();
-        }
-      },
-    })
-  ).current;
-
-  const handleSwipe = (direction) => {
-    const profile = profiles[currentIndex];
-
-    if (direction === 'right') {
-      setLikedProfiles((prev) => [...prev, profile]);
-    } else if (direction === 'left') {
-      setDislikedProfiles((prev) => [...prev, profile]);
-    }
-
-    nextCard();
-  };
-
-  const nextCard = () => {
-    position.setValue({ x: 0, y: 0 });
-    setCurrentIndex((prev) => prev + 1);
-  };
-
- 
-  const rotate = position.x.interpolate({
-    inputRange: [-width / 2, 0, width / 2],
-    outputRange: ['-15deg', '0deg', '15deg'],
-  });
-
-  const likeOpacity = position.x.interpolate({
-    inputRange: [0, width / 4],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  const dislikeOpacity = position.x.interpolate({
-    inputRange: [-width / 4, 0],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
-  const animatedStyle = {
-    transform: [...position.getTranslateTransform(), { rotate }],
-    marginHorizontal: '5%',
-  };
+export default function SwipeMusic() {
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.container}>
-          {currentIndex < profiles.length ? (
-  <Animated.View
-    style={[styles.card, animatedStyle]}
-    {...panResponder.panHandlers}
-  >
-    <Animated.Text style={[styles.likeLabel, { opacity: likeOpacity }]}>
-      CURTIDA
-    </Animated.Text>
-    <Animated.Text
-      style={[styles.dislikeLabel, { opacity: dislikeOpacity }]}
-    >
-      DISLIKE
-    </Animated.Text>
+    <View style={styles.container}>
+      <Animated.FlatList
+        data={DATA}
+        keyExtractor={(item) => item.id}
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image source={{ uri: item.image }} style={styles.background} />
 
-    <Text style={styles.profileName}>{profiles[currentIndex].name}</Text>
-    <Text style={styles.instruction}>Arraste para curtir ou rejeitar</Text>
-  </Animated.View>
-) : (
-  <View style={styles.resultsContainer}>
-    <Text style={styles.finished}>✨ Você chegou ao fim!</Text>
+          
+            <LinearGradient
+              colors={["#8000d5", "#f910a3", "#fddf00"]}
+              style={styles.gradient}
+            >
+             
+              <TouchableOpacity style={styles.playButton}>
+                <LinearGradient
+                  colors={["#fddf00", "#f910a3"]}
+                  style={styles.playCircle}
+                >
+                  <Ionicons name="play" size={50} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
 
-    <View style={styles.resultBox}>
-      <Text style={styles.sectionTitle}>👍 Curtidos</Text>
-      {likedProfiles.length > 0 ? (
-        likedProfiles.map((profile) => (
-          <Text key={profile.id} style={styles.resultText}>
-            {profile.name}
-          </Text>
-        ))
-      ) : (
-        <Text style={styles.emptyText}>Nenhum perfil curtido</Text>
-      )}
+             
+              <Text style={styles.musicTitle}>{item.music}</Text>
+
+            
+              <LinearGradient
+                colors={["#ff00cc", "#ffcc00"]}
+                style={styles.artistCard}
+              >
+                <View style={styles.artistRow}>
+                  <Image
+                    source={{ uri: item.artistImage }}
+                    style={styles.artistImage}
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.artistName}>{item.artist}</Text>
+                    <Text style={styles.artistDesc}>{item.description}</Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </LinearGradient>
+          </View>
+        )}
+      />
     </View>
-
-    <View style={styles.resultBox}>
-      <Text style={styles.sectionTitle}>👎 Rejeitados</Text>
-      {dislikedProfiles.length > 0 ? (
-        dislikedProfiles.map((profile) => (
-          <Text key={profile.id} style={styles.resultText}>
-            {profile.name}
-          </Text>
-        ))
-      ) : (
-        <Text style={styles.emptyText}>Nenhum perfil rejeitado</Text>
-      )}
-    </View>
-  </View>
-)}
-
-        </View>
-      </ScrollView>
-    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 40,
+    backgroundColor: "#000",
   },
   card: {
-    width: width * 0.65,
-    maxWidth: 400,
-    minWidth: 250,
-    height: height * 0.75,
-    maxHeight: 650,
-    minHeight: 400,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 20,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 20,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width,
+    height,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  likeLabel: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'green',
-    borderWidth: 2,
-    borderColor: 'green',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
+  background: {
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: "cover",
   },
-  dislikeLabel: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'red',
-    borderWidth: 2,
-    borderColor: 'red',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
+  gradient: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingBottom: 60,
   },
-  profileName: {
-    fontSize: Math.min(width * 0.07, 28),
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+  playButton: {
+    position: "absolute",
+    top: height * 0.3,
   },
-  instruction: {
-    fontSize: Math.min(width * 0.045, 18),
-    color: '#888',
-    textAlign: 'center',
+  playCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 10,
   },
-  finished: {
-    fontSize: 22,
-    color: '#999',
-    marginBottom: 20,
-  },
-  sectionTitle: {
+  musicTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
+    color: "#fff",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 25,
   },
-  resultText: {
+  artistCard: {
+    width: "85%",
+    borderRadius: 20,
+    padding: 12,
+  },
+  artistRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  artistImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
+  },
+  artistName: {
     fontSize: 16,
-    color: '#555',
-    marginTop: 4,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 5,
   },
-  resultsContainer: {
-    alignItems: 'center',
+  artistDesc: {
+    color: "#fff",
+    fontSize: 12,
   },
-  finished: {
-  fontSize: 24,
-  fontWeight: 'bold',
-  color: '#444',
-  marginBottom: 25,
-  textAlign: 'center',
-},
-
-resultsContainer: {
-  flex: 1,
-  alignItems: 'center',
-  justifyContent: 'center',
-  paddingHorizontal: 20,
-},
-
-resultBox: {
-  width: '90%',
-  backgroundColor: '#f9f9f9',
-  borderRadius: 16,
-  padding: 15,
-  marginVertical: 10,
-  elevation: 3,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowOffset: { width: 0, height: 3 },
-  shadowRadius: 6,
-},
-
-sectionTitle: {
-  fontSize: 20,
-  fontWeight: '600',
-  marginBottom: 10,
-  color: '#333',
-  textAlign: 'center',
-},
-
-resultText: {
-  fontSize: 16,
-  color: '#555',
-  marginTop: 6,
-  textAlign: 'center',
-},
-
-emptyText: {
-  fontSize: 14,
-  color: '#aaa',
-  fontStyle: 'italic',
-  textAlign: 'center',
-},
 });

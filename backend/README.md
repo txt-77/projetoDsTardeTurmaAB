@@ -52,6 +52,12 @@ A cada **push** em qualquer branch (`"**"`), a pipeline executa os seguintes pas
 
 ### 3. Instalação de dependências
 
+```cmd
+$ cd backend/
+
+$ pip install -r requirements.txt
+```
+
 - 🔹 Atualiza o `pip` e instala as bibliotecas necessárias:
 
 ```bash
