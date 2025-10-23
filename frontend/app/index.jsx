@@ -16,10 +16,9 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-// Adicione valores padrão para containerPadding, maxContentWidth e rf
-const containerPadding = 16; // Exemplo de valor padrão
-const maxContentWidth = 400; // Exemplo de largura máxima
-const rf = (size) => size; // Função de exemplo para calcular tamanhos responsivos
+const containerPadding = 16; 
+const maxContentWidth = 400; 
+const rf = (size) => size; 
 
 export default function Index() {
   const { height, width } = useWindowDimensions();
@@ -31,7 +30,7 @@ export default function Index() {
   }
 
   function entrar() {
-    router.push('/uploadMusic');
+    router.push('/home');
   }
 
   return (
