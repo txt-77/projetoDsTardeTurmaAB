@@ -30,6 +30,9 @@ export default function Index() {
     router.push('/cadastrar');
   }
 
+  function cadastro() {
+    router.push("/cadastrar");
+  }
   function entrar() {
     router.push('/uploadMusic');
   }

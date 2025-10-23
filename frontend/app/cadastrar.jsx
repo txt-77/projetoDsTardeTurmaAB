@@ -19,8 +19,8 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-const Cadastro = React.memo(() => {
-  const { width } = useWindowDimensions();
+const Cadastro = () => {
+  const { width, height } = useWindowDimensions();
 
   const clamp = useCallback((val, min, max) => Math.max(min, Math.min(max, val)), []);
   const rf = useCallback((size) => Math.round(clamp(size * (width / 390), 12, 30)), [width, clamp]);
