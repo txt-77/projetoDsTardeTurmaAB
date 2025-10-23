@@ -72,7 +72,7 @@ const Cadastro = React.memo(() => {
   const dynamicStyles = useMemo(
     () => ({
       logoContainer: { marginTop: rf(-40), marginBottom: rf(20) },
-      logo: { width: rf(110), height: rf(110) },
+      logo: { width: 200, height: 200 },
       formPadding: { paddingHorizontal: rf(25) },
       input: {
         width: '100%',
