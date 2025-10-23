@@ -18,9 +18,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const Cadastro = React.memo(() => {
   const { width } = useWindowDimensions();
+   const navigation = useNavigation(); 
 
   const clamp = useCallback((val, min, max) => Math.max(min, Math.min(max, val)), []);
   const rf = useCallback((size) => Math.round(clamp(size * (width / 390), 12, 30)), [width, clamp]);
@@ -104,8 +107,11 @@ const Cadastro = React.memo(() => {
               }}
               keyboardShouldPersistTaps="handled"
             >
+              <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+                        <AntDesign name="arrowleft" size={20} color="#fff" />
+                      </TouchableOpacity>
               <Animated.View style={{ opacity: fadeAnim, alignItems: 'center', width: '100%' }}>
-                {/* Logo */}
+                
                 <View style={[styles.logoContainer, dynamicStyles.logoContainer]}>
                   <Image
                     style={[styles.Logo, dynamicStyles.logo]}
@@ -114,11 +120,11 @@ const Cadastro = React.memo(() => {
                   />
                 </View>
 
-                {/* Form Container */}
+                
                 <View style={[styles.formContainer, dynamicStyles.formPadding]}>
                   <Text style={[styles.titulo, dynamicStyles.titulo]}>Cadastro</Text>
 
-                  {/* Campos */}
+                 
                   {[
                     {
                       placeholder: 'Nome de usuário',
@@ -164,7 +170,7 @@ const Cadastro = React.memo(() => {
                     </React.Fragment>
                   ))}
 
-                  {/* Botão */}
+                 
                   <TouchableOpacity
                     activeOpacity={0.85}
                     style={[
