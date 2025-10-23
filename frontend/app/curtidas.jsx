@@ -79,11 +79,13 @@ const App = () => {
 
   return (
     <LinearGradient
-      colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']}
-      style={[styles.container]}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-    >
+    colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75',]} 
+    style={styles.container}
+    start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
+    end={{ x: 0.5, y: 1 }}     
+  >
+  
+
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[styles.header, { paddingVertical: height * 0.035 }]}>
           <Text
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: '#962fbf',
+    padding: 20,
     alignItems: 'center',
   },
   headerText: {
@@ -219,9 +221,21 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   iconButton: {
-    backgroundColor: '#9300a0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 50,
+    padding: 10,
+    elevation: 5,
+  },
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#000000',
+    paddingVertical: 10,
+    marginBottom: '0%',
+    marginLeft: '0%',
+    marginRight: '0%',
+  },
+  navItem: {
+    padding: 10,
   },
   backHeart: {
     position: 'absolute',
