@@ -7,24 +7,17 @@ import {
   FlatList,
   SafeAreaView,
 } from 'react-native';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const GENEROS = [
-  'Funk',
-  'Sertanejo',
-  'Rap',
-  'Trap',
-  'Jerk',
-  'Drill',
-  'Samba',
-  'Axé',
-  'Soul',
-  'Blues',
-  'Rock',
-  'Gospel',
+  'Funk', 'Sertanejo', 'Rap', 'Trap', 'Jerk', 'Drill',
+  'Samba', 'Axé', 'Soul', 'Blues', 'Rock', 'Gospel',
 ];
 
 const GeneroSelector = () => {
   const [selecionados, setSelecionados] = useState([]);
+  const navigation = useNavigation(); 
 
   const toggleGenero = (genero) => {
     if (selecionados.includes(genero)) {
@@ -58,7 +51,13 @@ const GeneroSelector = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      
+      <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+        <AntDesign name="arrowleft" size={20} color="#fff" />
+      </TouchableOpacity>
+
       <Text style={styles.titulo}>Selecione seus Gêneros Musicais Preferidos:</Text>
+
       <FlatList
         data={GENEROS}
         keyExtractor={(item) => item}
@@ -66,6 +65,7 @@ const GeneroSelector = () => {
         numColumns={3}
         contentContainerStyle={styles.lista}
       />
+
       <TouchableOpacity
         style={[
           styles.botaoContinuar,
@@ -90,6 +90,15 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(150, 47, 191, 0.8)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 15,
   },
   lista: {
     gap: 10,

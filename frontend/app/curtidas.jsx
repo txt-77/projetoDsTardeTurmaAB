@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -81,7 +83,7 @@ const App = () => {
     <LinearGradient
     colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75',]} 
     style={styles.container}
-    start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
+    start={{ x: 0.5, y: 0 }}    
     end={{ x: 0.5, y: 1 }}     
   >
   
@@ -97,6 +99,9 @@ const App = () => {
             Suas Curtidas
           </Text>
         </View>
+         <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={20} color="#fff" />
+        </TouchableOpacity>
 
         <View
           style={[
@@ -220,6 +225,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
+  backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    marginLeft: -2,
+  },
+  
   iconButton: {
     borderRadius: 50,
     padding: 10,

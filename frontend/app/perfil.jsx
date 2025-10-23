@@ -1,12 +1,15 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo, useState, memo, useCallback } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const ProfileScreen = memo(() => {
   const { width } = useWindowDimensions();
   const [pressingLogout, setPressingLogout] = useState(false);
+   const navigation = useNavigation(); 
 
-  // Escala proporcional responsiva otimizada
+  
   const rf = useMemo(
     () => (size) =>
       Math.round(Math.max(size * 0.9, Math.min(size * 1.6, size * (width / 390)))),
@@ -16,7 +19,7 @@ const ProfileScreen = memo(() => {
   const paddingHorizontal = Math.max(16, width * 0.06);
   const isSmallScreen = width < 360;
 
-  // Dados estáticos
+ 
   const statsData = useMemo(
     () => [
       { number: 0, label: 'Músicas Curtidas' },
@@ -28,13 +31,14 @@ const ProfileScreen = memo(() => {
 
   const headerRadius = rf(28);
 
-  // Evita recriação de handlers a cada render
+ 
   const handlePressIn = useCallback(() => setPressingLogout(true), []);
   const handlePressOut = useCallback(() => setPressingLogout(false), []);
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
+     
+    
       <LinearGradient
         colors={['#FEC4C7', '#D9A6C4']}
         start={{ x: 0, y: 0 }}
@@ -69,8 +73,12 @@ const ProfileScreen = memo(() => {
           <Text style={[styles.location, { fontSize: rf(13) }]}>São Paulo, SP</Text>
         </View>
       </LinearGradient>
+      <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+                <AntDesign name="arrowleft" size={20} color="#fff" />
+              </TouchableOpacity>
 
-      {/* Estatísticas */}
+     
+      
       <View
         style={{
           flexDirection: 'row',
@@ -90,7 +98,7 @@ const ProfileScreen = memo(() => {
         ))}
       </View>
 
-      {/* Botão logout */}
+     
       <TouchableOpacity
         activeOpacity={0.9}
         style={[
@@ -110,8 +118,9 @@ const ProfileScreen = memo(() => {
       >
         <Text style={[styles.logoutText, { fontSize: rf(17) }]}>Sair da Conta</Text>
       </TouchableOpacity>
+      
 
-      {/* Rodapé */}
+  
       <View style={styles.footer}>
         {['Player', 'Curtidas', 'Perfil'].map((label, i) => (
           <TouchableOpacity
@@ -137,6 +146,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+    backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    marginLeft: -2,
   },
   username: { fontWeight: 'bold', color: '#441b34' },
   email: { color: '#380d26' },
