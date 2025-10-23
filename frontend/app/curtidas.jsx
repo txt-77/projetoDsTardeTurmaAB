@@ -10,10 +10,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [showParticles, setShowParticles] = useState(false);
+  const navigation = useNavigation(); 
 
   const particles = [
     useRef(new Animated.Value(0)).current,
@@ -56,7 +59,7 @@ const App = () => {
     <LinearGradient
     colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75',]} 
     style={styles.container}
-    start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
+    start={{ x: 0.5, y: 0 }}    
     end={{ x: 0.5, y: 1 }}     
   >
   
@@ -65,13 +68,16 @@ const App = () => {
         <View style={styles.header}>
           <Text style={styles.headerText}>Suas Curtidas</Text>
         </View>
+         <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={20} color="#fff" />
+        </TouchableOpacity>
 
         <View style={styles.iconContainer}>
   <TouchableWithoutFeedback onPress={handlePress}>
     <Animated.View style={[styles.iconButton, { transform: [{ scale: scaleAnim }] }]}>
-      {/* Coração branco maior atrás */}
+      
       <Icon name="heart" size={96} color="#fff" style={{ position: 'absolute', top: 8, left: 7 }} />
-      {/* Coração amarelo na frente */}
+    
       <Icon name="heart" size={90} color="#ffd900" />
     </Animated.View>
   </TouchableWithoutFeedback>
@@ -152,6 +158,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
+  backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    marginLeft: -2,
+  },
+  
   iconButton: {
     borderRadius: 50,
     padding: 10,
