@@ -11,23 +11,24 @@ import {
 
 const App = () => {
   const rout = useRouter();
-  function fnSelect() {
-    rout.push('/selectGenero');
-  }
-  return (
 
+  
+  const goTo = (path) => {
+    rout.push(`/${path}`);
+  };
+
+  return (
     <LinearGradient
       colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75', '#4f5bd5']}
       style={styles.container}
-      start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
+      start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
     >
-
-
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Bem Vindo, "nome"!!</Text>
+          <Text style={styles.headerText}>Bem Vindo!! </Text>
         </View>
+
         <View style={styles.fundoPost}>
           <View style={styles.postagem}>
             <Text style={styles.titulo}>Título da Postagem</Text>
@@ -47,23 +48,42 @@ const App = () => {
               Este é o conteúdo da sua postagem. Você pode colocar texto, imagens ou qualquer outro componente aqui.
             </Text>
           </View>
-
         </View>
+
+      
         <View style={styles.nav}>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Notificação</Text>
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('configuracoes')}>
+            <Text style={styles.navText1}>Configurações</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Player</Text>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('avatarperfil')}>
+            <Text style={styles.navText1}>Avatar-Perfil</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('home')}>
             <Text style={styles.navText1}>Home</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Chat</Text>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('curtidas')}>
+            <Text style={styles.navText1}>Curtidas</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('perfil')}>
             <Text style={styles.navText1}>Perfil</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('selectgenero')}>
+            <Text style={styles.navText1}>SelecionarGenero</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('swipes')}>
+            <Text style={styles.navText1}>Swipes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('perfilartista')}>
+            <Text style={styles.navText1}>PerfilArtista</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navItem} onPress={() => goTo('uploadmusic')}>
+            <Text style={styles.navText1}>UploadMusic</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -103,7 +123,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff', // branco para contraste
+    color: '#fff',
     marginBottom: 8,
   },
   conteudo: {
@@ -112,6 +132,7 @@ const styles = StyleSheet.create({
   },
   nav: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
     backgroundColor: '#1d1436',
     borderRadius: 10,
