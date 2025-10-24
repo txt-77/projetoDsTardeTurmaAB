@@ -18,9 +18,11 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
-const Cadastro = React.memo(() => {
-  const { width } = useWindowDimensions();
+const Cadastro = () => {
+  const { width, height } = useWindowDimensions();
 
   const clamp = useCallback((val, min, max) => Math.max(min, Math.min(max, val)), []);
   const rf = useCallback((size) => Math.round(clamp(size * (width / 390), 12, 30)), [width, clamp]);
@@ -104,8 +106,11 @@ const Cadastro = React.memo(() => {
               }}
               keyboardShouldPersistTaps="handled"
             >
+              <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+                        <AntDesign name="arrowleft" size={20} color="#fff" />
+                      </TouchableOpacity>
               <Animated.View style={{ opacity: fadeAnim, alignItems: 'center', width: '100%' }}>
-                {/* Logo */}
+                
                 <View style={[styles.logoContainer, dynamicStyles.logoContainer]}>
                   <Image
                     style={[styles.Logo, dynamicStyles.logo]}
@@ -114,11 +119,11 @@ const Cadastro = React.memo(() => {
                   />
                 </View>
 
-                {/* Form Container */}
+                
                 <View style={[styles.formContainer, dynamicStyles.formPadding]}>
                   <Text style={[styles.titulo, dynamicStyles.titulo]}>Cadastro</Text>
 
-                  {/* Campos */}
+                 
                   {[
                     {
                       placeholder: 'Nome de usuário',
@@ -164,7 +169,7 @@ const Cadastro = React.memo(() => {
                     </React.Fragment>
                   ))}
 
-                  {/* Botão */}
+                 
                   <TouchableOpacity
                     activeOpacity={0.85}
                     style={[
@@ -201,8 +206,10 @@ const styles = StyleSheet.create({
   formContainer: { width: '90%', maxWidth: 450 },
   titulo: { fontFamily: 'negrito', color: '#fff', textAlign: 'center' },
   input: {
+    width: 300,
+    height: 55,
     borderRadius: 25,
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: '#FFF',
     textAlign: 'center',
     fontFamily: 'normal',
@@ -211,10 +218,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 5,
+    backgroundColor: '#1D143642',
+    marginTop: 15,
+    color: '#fff',
+    fontSize: 20,
   },
   botao: {
     backgroundColor: '#1d1436',
-    borderWidth: 1,
+    //borderWidth: 1,
     borderColor: '#8000D5',
     alignItems: 'center',
   },
