@@ -1,21 +1,10 @@
 from typing import Dict, Any, List
 from app.db.supabase_client import get_supabase
-from fastapi import HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 
-'''
-  Observação futura:
-  - Limit vai funcionar para testar, porém precisara ser paginado depois.
-  -- Adições possíveis --
-  - Um parâmetro opcional "exclude_ids" para permitir
-    a exclusão de músicas específicas da recomendação.
-  - Um parâmetro opcional "min_likes" para filtrar músicas
-    que tenham pelo menos um certo número de likes.
-  - Um parâmetro opcional "recent_days" para considerar
-    apenas músicas postadas nos últimos N dias.
-  - Um parâmetro opcional "order_by" para permitir
-    ordenação personalizada dos resultados.
-'''
+router = APIRouter()
 
+@router.get("/popular")
 def recommend_popular(
     user_id: int, 
     limit: int = 10
