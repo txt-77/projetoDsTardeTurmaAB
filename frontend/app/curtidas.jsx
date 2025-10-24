@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,28 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Animated,
+  useWindowDimensions,
+  AccessibilityInfo,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native"; 
 
 const App = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [showParticles, setShowParticles] = useState(false);
+  const { width, height } = useWindowDimensions();
+  const [reduceMotionEnabled, setReduceMotionEnabled] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      AccessibilityInfo.isReduceMotionEnabled().then((result) => {
+        setReduceMotionEnabled(result);
+      });
+    }
+  }, []);
 
   const particles = [
     useRef(new Animated.Value(0)).current,
@@ -22,6 +37,8 @@ const App = () => {
   ];
 
   const handlePress = () => {
+    if (reduceMotionEnabled) return;
+
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.3,
@@ -51,38 +68,83 @@ const App = () => {
     });
   };
 
+  const isPortrait = height >= width;
+
+  const headerFontSize = Math.min(Math.max(width * 0.06, 18), 28);
+  const mainHeartSize = Math.min(Math.max(width * 0.25, 80), 130);
+  const particleSize = Math.min(Math.max(width * 0.045, 15), 22);
+  const contentTitleSize = Math.min(Math.max(width * 0.055, 17), 24);
+  const contentDescSize = Math.min(Math.max(width * 0.038, 13), 18);
+  const navFontSize = Math.min(Math.max(width * 0.04, 14), 20);
+  const iconButtonPadding = Math.min(Math.max(width * 0.04, 12), 20);
+  const iconButtonBorderRadius = Math.min(Math.max(width * 0.3, 50), 90);
+
   return (
-   
     <LinearGradient
     colors={['#962fbf', '#d62976', '#fa7e1e', '#feda75',]} 
     style={styles.container}
-    start={{ x: 0.5, y: 0 }}    // topo centralizado (x = 0.5, y = 0)
+    start={{ x: 0.5, y: 0 }}    
     end={{ x: 0.5, y: 1 }}     
   >
   
 
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Suas Curtidas</Text>
+        <View style={[styles.header, { paddingVertical: height * 0.035 }]}>
+          <Text
+            accessible
+            accessibilityRole="header"
+            accessibilityLabel="Título Suas Curtidas"
+            style={[styles.headerText, { fontSize: headerFontSize }]}
+          >
+            Suas Curtidas
+          </Text>
         </View>
+         <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" size={20} color="#fff" />
+        </TouchableOpacity>
 
-        <View style={styles.iconContainer}>
-  <TouchableWithoutFeedback onPress={handlePress}>
-    <Animated.View style={[styles.iconButton, { transform: [{ scale: scaleAnim }] }]}>
-      {/* Coração branco maior atrás */}
-      <Icon name="heart" size={96} color="#fff" style={{ position: 'absolute', top: 8, left: 7 }} />
-      {/* Coração amarelo na frente */}
-      <Icon name="heart" size={90} color="#ffd900" />
-    </Animated.View>
-  </TouchableWithoutFeedback>
+        <View
+          style={[
+            styles.iconContainer,
+            { marginTop: height * 0.03, flexDirection: isPortrait ? 'column' : 'row' },
+          ]}
+        >
+          <TouchableWithoutFeedback
+            onPress={handlePress}
+            accessibilityRole="button"
+            accessibilityLabel="Botão de Curtir"
+            accessibilityHint="Ativa animação de coração"
+            disabled={reduceMotionEnabled}
+          >
+            <Animated.View
+              style={[
+                styles.iconButton,
+                {
+                  transform: [{ scale: scaleAnim }],
+                  padding: iconButtonPadding,
+                  borderRadius: iconButtonBorderRadius,
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.35,
+                  shadowRadius: 7,
+                  elevation: 10,
+                },
+              ]}
+            >
+              <Icon name="heart" size={mainHeartSize} color="#fff" style={styles.backHeart} />
+              <Icon name="heart" size={mainHeartSize * 0.9} color="#ffd900" />
+            </Animated.View>
+          </TouchableWithoutFeedback>
 
-
-
-          {showParticles &&
+          {!reduceMotionEnabled && showParticles &&
             particles.map((anim, i) => {
               const translateY = anim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, -80 - i * 10],
+                outputRange: [0, -90 - i * 15],
+              });
+
+              const translateX = anim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, (i % 2 === 0 ? -1 : 1) * (25 + i * 12)],
               });
 
               const opacity = anim.interpolate({
@@ -97,35 +159,48 @@ const App = () => {
                   key={i}
                   style={{
                     position: 'absolute',
-                    top: '45%',
-                    transform: [{ translateY }],
+                    top: height * 0.4,
+                    transform: [{ translateY }, { translateX }],
                     opacity,
                   }}
                 >
-                  <Icon name="heart" size={20} color={colors[i % colors.length]} />
+                  <Icon name="heart" size={particleSize} color={colors[i % colors.length]} />
                 </Animated.View>
               );
             })}
         </View>
 
-        <View style={styles.content}>
-          <Text style={styles.contentText1}>Ainda sem curtidas</Text>
+        <View style={[styles.content, { paddingHorizontal: width * 0.1 }]}>
+          <Text
+            accessible
+            accessibilityRole="text"
+            accessibilityLabel="Mensagem principal ainda sem curtidas"
+            style={[styles.contentText1, { fontSize: contentTitleSize }]}
+          >
+            Ainda sem curtidas
+          </Text>
+          <Text
+            accessible
+            accessibilityRole="text"
+            accessibilityLabel="Descrição para começar a descobrir músicas"
+            style={[styles.contentText2, { fontSize: contentDescSize, marginTop: 12 }]}
+          >
+            Comece a descobrir músicas para ver suas curtidas aqui!
+          </Text>
         </View>
 
-        <View style={styles.content}>
-          <Text style={styles.contentText2}>Comece a descobrir músicas para ver suas curtidas aqui!</Text>
-        </View>
-
-        <View style={styles.nav}>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Player</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Curtidas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navItem}>
-            <Text style={styles.navText1}>Perfil</Text>
-          </TouchableOpacity>
+        <View style={[styles.nav, { paddingVertical: height * 0.025 }]}>
+          {['Player', 'Curtidas', 'Perfil'].map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[styles.navItem, { paddingHorizontal: width * 0.06 }]}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Navegar para ${item}`}
+            >
+              <Text style={[styles.navText1, { fontSize: navFontSize }]}>{item}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -135,7 +210,6 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
   header: {
     padding: 20,
@@ -143,15 +217,25 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#fff',
-    fontSize: 20,
     fontWeight: 'bold',
   },
   iconContainer: {
-    flex: 1,
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    position: 'relative',
   },
+  backCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    marginLeft: -2,
+  },
+  
   iconButton: {
     borderRadius: 50,
     padding: 10,
@@ -169,34 +253,32 @@ const styles = StyleSheet.create({
   navItem: {
     padding: 10,
   },
-  navText1: {
-    fontSize: 16,
-    color: '#ff3cf5',
+  backHeart: {
+    position: 'absolute',
+    top: 5,
+    left: 5,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   contentText1: {
-    fontSize: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
     color: '#ffffff',
+    textAlign: 'center',
   },
   contentText2: {
-    fontSize: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
     color: '#ffffff',
+    textAlign: 'center',
   },
-  footer: {
-    backgroundColor: '#4A90E2',
-    padding: 15,
-    alignItems: 'center',
+  nav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#000',
   },
-  footerText: {
-    color: '#f80091',
+  navItem: {},
+  navText1: {
+    color: '#ff3cf5',
   },
 });
 

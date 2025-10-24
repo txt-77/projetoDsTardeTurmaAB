@@ -1,8 +1,9 @@
 import React, { useMemo, memo } from "react";
-import { Text, View, ScrollView, TouchableOpacity, useWindowDimensions, StyleSheet } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity, useWindowDimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native"; 
 
-// Componente memoizado para tags
+
 const GenreItem = memo(({ genre, rf, width }) => (
   <TouchableOpacity
     style={{
@@ -20,7 +21,7 @@ const GenreItem = memo(({ genre, rf, width }) => (
   </TouchableOpacity>
 ));
 
-// Componente memoizado para artistas
+
 const ArtistItem = memo(({ artist, rf, artistWidth }) => (
   <TouchableOpacity
     style={{
@@ -50,8 +51,9 @@ const ArtistItem = memo(({ artist, rf, artistWidth }) => (
   </TouchableOpacity>
 ));
 
-// Botão memoizado para o header
+
 const HeaderButton = memo(({ rf }) => {
+  const navigation = useNavigation(); 
   const style = useMemo(
     () => ({
       width: rf(40),
@@ -64,13 +66,13 @@ const HeaderButton = memo(({ rf }) => {
     [rf]
   );
   return (
-    <TouchableOpacity style={style}>
+    <TouchableOpacity style={style} onPress={() => navigation.goBack()}>
       <Text style={{ color: "white", fontSize: rf(18) }}>←</Text>
     </TouchableOpacity>
   );
 });
 
-// Botão memoizado “Seguir +”
+
 const FollowButton = memo(({ rf, width }) => {
   const style = useMemo(
     () => ({
@@ -141,12 +143,12 @@ export default function Index() {
   return (
     <LinearGradient colors={["#8B5CF6", "#EAB308"]} style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={scrollContentStyle}>
-        {/* Header */}
+       
         <View style={{ paddingTop, paddingHorizontal, paddingBottom: rf(20) }}>
-          <HeaderButton rf={rf} />
+          <HeaderButton rf={rf} /> 
         </View>
 
-        {/* Perfil */}
+       
         <View style={{ alignItems: "center", paddingHorizontal }}>
           <View style={[profileIconStyle, { width: rf(120), height: rf(120) }]}>
             <Text style={{ color: "white", fontSize: rf(20) }}>👤</Text>
@@ -183,7 +185,7 @@ export default function Index() {
           </View>
         </View>
 
-        {/* Artistas responsivo em grid */}
+       
         <View style={{ paddingHorizontal, paddingBottom: rf(40) }}>
           <Text style={{ color: "white", fontSize: rf(20), fontWeight: "bold", marginBottom: rf(20) }}>
             Artistas mais ouvidos

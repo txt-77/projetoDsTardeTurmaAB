@@ -17,5 +17,5 @@ NicolasAN1 -> Nicolas Alves de Castro
 Geistch -> Gustavo Martins de Carvalho Santos Ribeiro  
 yrCapsaicin -> Lynn Dias da Rocha  
 miguel-pereita -> Miguel Santos Pereira  
-
+1sec-git -> Felipe Cesare  
 Vinnyforce0 -> Vinicius Santos  

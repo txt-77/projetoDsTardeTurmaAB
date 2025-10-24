@@ -1,7 +1,11 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import React, { useState } from 'react';
+"use client"
+
+import { LinearGradient } from "expo-linear-gradient"
+import { router } from "expo-router"
+import { useState, useCallback, useMemo, useRef, useEffect } from "react"
 import {
+  Animated,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -14,156 +18,161 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
-} from 'react-native';
-
-// Adicione valores padrão para containerPadding, maxContentWidth e rf
-const containerPadding = 16; // Exemplo de valor padrão
-const maxContentWidth = 400; // Exemplo de largura máxima
-const rf = (size) => size; // Função de exemplo para calcular tamanhos responsivos
+} from "react-native"
 
 export default function Index() {
-  const { height, width } = useWindowDimensions();
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const { width } = useWindowDimensions()
+
+  const clamp = useCallback((val, min, max) => Math.max(min, Math.min(max, val)), [])
+  const rf = useCallback((size) => Math.round(clamp(size * (width / 390), 12, 30)), [width, clamp])
+
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("")
+  const [isPressing, setIsPressing] = useState(false)
+
+  const fadeAnim = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start()
+  }, [])
 
   function cadastro() {
-    router.push('/cadastrar');
+    router.push("/cadastrar")
   }
 
-  function entrar() {
-    router.push('/uploadMusic');
+  function cadastro() {
+    router.push("/cadastrar");
   }
+  function entrar() {
+    router.push("/uploadMusic")
+  }
+
+  const dynamicStyles = useMemo(
+    () => ({
+      logoContainer: { marginTop: rf(-40), marginBottom: rf(20) },
+      logo: { width: 200, height: 200 },
+      formPadding: { paddingHorizontal: rf(25) },
+      input: {
+        width: "100%",
+        height: rf(48),
+        fontSize: rf(17),
+        paddingHorizontal: rf(15),
+        marginVertical: rf(8),
+      },
+      botao: { width: "100%", paddingVertical: rf(12), borderRadius: rf(40), marginTop: rf(20) },
+      textoBotao: { fontSize: rf(19) },
+      titulo: { fontSize: rf(26), marginBottom: rf(20) },
+      linkText: { fontSize: rf(15), marginTop: rf(15) },
+    }),
+    [width, rf],
+  )
 
   return (
-    <LinearGradient
-      colors={['#fedea6', '#fc7ea7', '#7466e6']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <View
-                style={[
-                  styles.innerContainer,
-                  {
-                    paddingHorizontal: containerPadding,
-                    maxWidth: maxContentWidth,
-                    alignSelf: 'center',
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.title,
-                    { fontSize: rf(26), marginBottom: Math.max(8, height * 0.01) },
-                  ]}
-                >
-                  Descubra Música Local
-                </Text>
-                <Text style={[styles.subtitle, { fontSize: rf(15) }]}>
-                  Conecte-se com artistas da sua região
-                </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <LinearGradient colors={["#8000d5", "#f910a3", "#fddf00"]} style={styles.gradient}>
+        <SafeAreaView style={styles.safe}>
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex}>
+            <ScrollView
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Animated.View style={{ opacity: fadeAnim, alignItems: "center", width: "100%" }}>
+                <View style={[styles.logoContainer, dynamicStyles.logoContainer]}>
+                  <Image
+                    style={[styles.Logo, dynamicStyles.logo]}
+                    source={require("../assets/images/Logofundo.png")}
+                    accessibilityLabel="Logo do aplicativo"
+                  />
+                </View>
 
-                <Text style={[styles.label, { fontSize: rf(14) }]}>Email</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { height: Math.min(Math.max(height * 0.065, 48), 68), fontSize: rf(16) },
-                  ]}
-                  placeholder="email@exemplo.com"
-                  placeholderTextColor="#666"
-                  keyboardType="email-address"
-                  value={email}
-                  onChangeText={setEmail}
-                />
+                <View style={[styles.formContainer, dynamicStyles.formPadding]}>
+                  <Text style={[styles.titulo, dynamicStyles.titulo]}>Login</Text>
 
-                <Text style={[styles.label, { fontSize: rf(14) }]}>Senha</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { height: Math.min(Math.max(height * 0.065, 48), 68), fontSize: rf(16) },
-                  ]}
-                  placeholder="••••••••"
-                  placeholderTextColor="#666"
-                  secureTextEntry
-                  value={senha}
-                  onChangeText={setSenha}
-                />
+                  <TextInput
+                    style={[styles.input, dynamicStyles.input]}
+                    placeholder="E-mail"
+                    placeholderTextColor="#FFF"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
 
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    { paddingVertical: Math.min(Math.max(height * 0.02, 12), 20) },
-                  ]}
-                  onPress={entrar}
-                >
-                  <Text style={[styles.buttonText, { fontSize: rf(16) }]}>Entrar</Text>
-                </TouchableOpacity>
+                  <TextInput
+                    style={[styles.input, dynamicStyles.input]}
+                    placeholder="Senha"
+                    placeholderTextColor="#FFF"
+                    value={senha}
+                    onChangeText={setSenha}
+                    secureTextEntry
+                  />
 
-                <TouchableOpacity onPress={cadastro}>
-                  <Text style={[styles.footer, { fontSize: rf(14) }]}>
-                    Não tem uma conta?{' '}
-                    <Text style={styles.footerLink}>Cadastre-se</Text>
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    activeOpacity={0.85}
+                    style={[
+                      styles.botao,
+                      dynamicStyles.botao,
+                      isPressing && { transform: [{ scale: 0.97 }], backgroundColor: "#26144d" },
+                    ]}
+                    onPressIn={() => setIsPressing(true)}
+                    onPressOut={() => setIsPressing(false)}
+                    onPress={entrar}
+                  >
+                    <Text style={[styles.textoBotao, dynamicStyles.textoBotao]}>Entrar</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={cadastro}>
+                    <Text style={[styles.linkText, dynamicStyles.linkText]}>Não possui conta?</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
             </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </LinearGradient>
-  );
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </LinearGradient>
+    </TouchableWithoutFeedback>
+  )
 }
 
 const styles = StyleSheet.create({
-  innerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  title: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  subtitle: {
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  label: {
-    color: '#fff',
-    marginBottom: 6,
-  },
+  gradient: { flex: 1 },
+  safe: { flex: 1 },
+  flex: { flex: 1 },
+  logoContainer: { alignSelf: "center" },
+  Logo: { resizeMode: "contain" },
+  formContainer: { width: "90%", maxWidth: 450 },
+  titulo: { fontFamily: "negrito", color: "#fff", textAlign: "center" },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    marginBottom: 16,
-    color: '#333',
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: "#FFF",
+    textAlign: "center",
+    fontFamily: "normal",
+    color: "#FFF",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 5,
   },
-  button: {
-    backgroundColor: '#5a4ae3',
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 20,
+  botao: {
+    backgroundColor: "#1d1436",
+    borderWidth: 1,
+    borderColor: "#8000D5",
+    alignItems: "center",
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+  textoBotao: { color: "#FFF", fontFamily: "negrito" },
+  linkText: {
+    color: "#FFF",
+    textAlign: "center",
+    fontFamily: "normal",
   },
-  footer: {
-    color: '#fff',
-    textAlign: 'center',
-  },
-  footerLink: {
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-  },
-});
+})
