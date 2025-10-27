@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+
 def test_create_user():
     user = {
         "email": "maria@gmail.com",
