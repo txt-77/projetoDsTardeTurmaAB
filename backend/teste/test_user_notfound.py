@@ -17,3 +17,7 @@ def test_delete_nonexistent_user():
     data = response.json()
     assert "error" in data
     assert data["error"] == "User not found"
+
+    list_response = client.get("/api/users/") 
+    assert list_response.status_code == 200
+    assert isinstance(list_response.json(), list)
