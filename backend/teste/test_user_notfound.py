@@ -5,3 +5,15 @@ client = TestClient(app)
 
 def test_delete_nonexistent_user():
     response = client.delete("/api/users/999")
+
+    if response.status_code == 404:
+        print("Erro 404! Usuário não encontrado.")
+        print("Response content:", response.json())
+        data = response.json()
+        assert "detail" in data or "error" in data
+        return
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "error" in data
+    assert data["error"] == "User not found"
