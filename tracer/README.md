@@ -8,3 +8,4 @@ O tracer eh uma aplicação separada para capturar e gerenciar logs do frontend 
 2. `npm install` (use o node v22.14.0)
 3. `npm run dev` para rodar o modo de desenvolvimento
 
+# Arquitetura: clean arch + Domain Driven Design
